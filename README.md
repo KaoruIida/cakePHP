@@ -1,51 +1,54 @@
-# CakePHP Application Skeleton
+# CakePHP Application
 
-[![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
+『テスト問題システム(仮)』<br>
+cakePHP 3系で作成した、問題/回答の登録〜テスト〜自動採点できるWebアプリケーション。
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 3.x.
+##プログラム概要
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+実装のメインはログイン認証とCRUD機能です。<br>
+MVCの作成にbaveコマンドは使用していません。
 
-## Installation
+* ログイン機能
+* 問題/答えの登録・編集・削除機能
+* 問題の回答、自動採点機能
+* 過去の採点結果の閲覧機能
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+##作業環境
+ 
+使用PC: MacBook<br>
+VirtualBox・Vagrantを使ってLAMP環境を構築・検証。
 
-If Composer is installed globally, run
+* CentOS: 7.4
+* Apache：2.4
+* MySQL：5.6
+* PHP：7.3
 
-```bash
-composer create-project --prefer-dist cakephp/app
-```
+##技術選定
 
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+比較的使われている頻度の高い環境を選択。
+* cakePHP 3系・上記「作業環境」・DB
+* Github・ChatWorkのツールを用いてエンジニア に質問・レビューしやすい環境であること。
+* 公式ドキュメント、文献、Qiitaやブログ記事など、検索元が容易であること。
 
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
+##コード作成ルール
 
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
+レビューにあたり以下のルールを設定しました。
 
-```bash
-bin/cake server -p 8765
-```
+* 変数の統一。※アッパーキャメルは不可。
+キャメルケース…コントローラ・view側
+スネークケース…グローバル変数　
+*  必要に応じて、定数化した方がいい部分は定数化する。
+* 使用されていない引数が設定されていないこと。
+* 配列の書き方を統一。※基本的に(array)ではなく、[]で記載。
+* 使いまわしていない変数は変数にせずそのまま使用する。
+*  usersテーブルのdelete_flagはmysql側でデフォルト0を設定
 
-Then visit `http://localhost:8765` to see the welcome page.
+##残作業
 
-## Update
+以下は今後の改修内容です。
 
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
-
-## Configuration
-
-Read and edit `config/app.php` and setup the `'Datasources'` and any other
-configuration relevant for your application.
-
-## Layout
-
-The app skeleton uses a subset of [Foundation](http://foundation.zurb.com/) (v5) CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+* ユーザー認証の設定。
+* 変数・配列・コメントアウトの見直し。
+* 「問題と答えの確認・登録」ボタンで、登録数が0の場合は、一覧でなく登録画面に遷移する仕様にする。
+* 回答欄が最大3件の表示になっているが、追加ボタンで欄数を増せる仕様にする。
+* フロント側の検討。(現状テンプレートエンジンのみ)
