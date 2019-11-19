@@ -1,4 +1,4 @@
-# CakePHP/Web Test System
+# CakePHP_Web Test System
 
 『テスト問題システム(仮)』<br>
 cakePHP 3系で作成した、問題/回答の登録〜テスト〜自動採点できるWebアプリケーション。
