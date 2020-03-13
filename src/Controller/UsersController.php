@@ -1,20 +1,23 @@
 <?php
-// src/Controller/UsersController.php
 namespace App\Controller;
+
 use Cake\Event\Event;
+
+/**
+ * ユーザー登録、ログイン、ログアウトページ
+ * Class QuestionsController
+ * @package App\Controller
+ */
 class UsersController extends AppController
 {
     public function beforeFilter(Event $event)
     {
         parent::beforeFilter($event);
-        // ユーザーの登録とログアウトを許可。
-        // allow のリストに "login" アクションを追加しないこと。
-        // そうすると AuthComponent の正常な機能に問題が発生する。
-        $this->Auth->allow();//TODO : ログイン機能の完全実装後に条件を作成
+        $this->Auth->allow();
     }
     /**
+     * ユーザー登録
      * Add method
-     *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
@@ -29,7 +32,9 @@ class UsersController extends AppController
             $this->Flash->error(__('ユーザーが登録されません。やり直してください。'));
         }
         $this->set(compact('user'));
+        $this->render('add', 'login_layout');
     }
+
     /**
      * ログイン
      * login method
@@ -37,8 +42,6 @@ class UsersController extends AppController
     public function login()
     {
         if ($this->request->is('post')) {
-            //identify :送られたフォームの内容をもとに認証作業をおこなう
-            //nameとpasswordの値でusersテーブルを検索し一致しているか調べる
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
@@ -48,6 +51,7 @@ class UsersController extends AppController
         }
         $this->render('login', 'login_layout');
     }
+
     /**
      * ログアウト
      * logout method

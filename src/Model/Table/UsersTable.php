@@ -1,9 +1,11 @@
 <?php
 namespace App\Model\Table;
+
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
+
 class UsersTable extends Table
 {
     public function initialize(array $config)
@@ -14,7 +16,6 @@ class UsersTable extends Table
         $this->setPrimaryKey('id');
         $this->addBehavior('Timestamp');
 
-        //ひとつのuser_idと紐づけて複数のhistoryを出力する設定
         $this->hasMany('Histories')
             ->setForeignKey('user_id')
             ->setDependent(true);
@@ -22,7 +23,7 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         return $validator
-            ->notEmpty('name', 'A name is required')
-            ->notEmpty('password', 'A password is required');
+            ->notEmpty('name', '名前の入力は必須です')
+            ->notEmpty('password', 'パスワードの入力は必須です');
     }
 }

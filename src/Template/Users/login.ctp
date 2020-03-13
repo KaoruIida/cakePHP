@@ -1,4 +1,3 @@
-<!-- File: src/Template/Users/login.ctp -->
 <?php $this->assign('title', 'ログイン画面'); ?>
 
 <div class="users form">

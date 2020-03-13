@@ -1,17 +1,15 @@
 <?php
-// src/Controller/TestsController.php
 namespace App\Controller;
+
 use Cake\ORM\TableRegistry;
 use Cake\I18n\Time;
 
-class TestsController extends AppController
-{
-    private $session;
-    public function initialize()
-    {
-        parent::initialize();
-        $this->session = $this->request->getSession();
-    }
+/**
+ * テスト、採点、履歴ページ
+ * Class QuestionsController
+ * @package App\Controller
+ */
+class TestsController extends AppController{
 
     /**
      * テスト画面
@@ -22,12 +20,12 @@ class TestsController extends AppController
         $questions = TableRegistry::getTableLocator()->get('questions');
         $query = $questions->find('all', ['order' => 'rand()']);
         $this->set('questions', $query->toArray());
-        //rand関数で生成した文字列＋マイクロ秒単位にもとづいた文字列＋エントロピー文字列
-        //さらにmd5ハッシュ変換を行う
+        // rand関数で生成した文字列＋マイクロ秒単位にもとづいた文字列＋エントロピー文字列
+        // md5ハッシュ変換
         $token = md5(uniqid(rand(), true));
-        // セッションデータの書き込み
+        // セッションの書き込み
         $this->session->write(['token' => $token]);
-        // セッションデータの読み込み
+        // セッションの読み込み
         $this->set('token', $token);
     }
 
@@ -45,33 +43,33 @@ class TestsController extends AppController
             if ($user === null) {
                 return $this->redirect(['controller' => 'Users', 'action' => 'login']);
             }
-            //ユーザーの回答
-            $request_answers = $this->request->getData('answer');
-            //ユーザーの回答とCorrect_answersテーブルのanswerが一致しているか正誤判定
-            $correct_answers = TableRegistry::getTableLocator()->get('correct_answers');
-            //正解数
-            $correct_count = 0;
-            foreach ($request_answers as $request_answer) {
-                $query = $correct_answers->find()->where(['questions_id' => $request_answer['question_id']]);
-                foreach ($query as $correct_answer) {
+            // ユーザーの回答
+            $requestAnswers = $this->request->getData('answer');
+            // ユーザーの回答とcorrect_answersテーブルのanswerが一致しているか正誤判定
+            $correctAnswers = TableRegistry::getTableLocator()->get('correct_answers');
+            // 正解数
+            $correctCount = 0;
+            foreach ($requestAnswers as $requestAnswer) {
+                $query = $correctAnswers->find()->where(['questions_id' => $requestAnswer['question_id']]);
+                foreach ($query as $correctAnswer) {
                     // 回答が一致したら加算
-                    if ($request_answer['users_answer'] == $correct_answer['answer']) {
-                        $correct_count++;
+                    if ($requestAnswer['users_answer'] == $correctAnswer['answer']) {
+                        $correctCount++;
                         break;
                     }
                 }
             }
-            //全問題数
-            $question_count = count($request_answers);
+            // 全問題数
+            $questionCount = count($requestAnswers);
             // ユーザーの点数(100点満点中)
-            $point = round(100 * $correct_count / $question_count);
+            $point = round(100 * $correctCount / $questionCount);
             // 採点時間＝現在日時を設定
             $datetime = new Time();
-            //採点結果画面に渡す配列
+            // 採点結果画面に渡す配列
             $results = [
                 'user_name' => $user['name'],
-                'correct_count' => $correct_count,
-                'question_count' => $question_count,
+                'correct_count' => $correctCount,
+                'question_count' => $questionCount,
                 'point' => $point,
                 'datetime' => $datetime
             ];
@@ -81,13 +79,16 @@ class TestsController extends AppController
         }
     }
 
-    private function saveHistories($user_id, $point, $datetime)
+    /**
+     * 採点結果を保存
+     */
+    private function saveHistories($userId, $point, $datetime)
     {
         // Histories テーブルに登録
         $histories = TableRegistry::getTableLocator()->get('histories');
         $historiesEntity = $histories->newEntity();
         // 登録データの作成
-        $historiesEntity->user_id = $user_id;
+        $historiesEntity->user_id = $userId;
         $historiesEntity->point = $point;
         $historiesEntity->created_at = $datetime;
         $histories->save($historiesEntity);

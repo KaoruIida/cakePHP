@@ -1,4 +1,3 @@
-<!-- File: src/Template/Questions/question_list.ctp -->
 <?php $this->assign('title', '問題/答え一覧画面'); ?>
 
 <?= $this->Html->link('新規作成', ['action' => 'register']) ?>

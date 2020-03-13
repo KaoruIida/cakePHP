@@ -1,8 +1,11 @@
 <?php
-// src/Controller/TopController.php
-
 namespace App\Controller;
 
+/**
+ * トップページ
+ * Class TopController
+ * @package App\Controller
+ */
 class TopController extends AppController {
 
     function top() {
