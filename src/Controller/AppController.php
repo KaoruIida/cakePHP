@@ -12,7 +12,6 @@
  * @since     0.2.9
  * @license   https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace App\Controller;
 
 use Cake\Controller\Controller;
@@ -28,6 +27,7 @@ use Cake\Event\Event;
  */
 class AppController extends Controller
 {
+    protected $session;
 
     /**
      * Initialization hook method.
@@ -40,7 +40,9 @@ class AppController extends Controller
      */
     public function initialize()
     {
+        // 他のControllerでもセッションオブジェクトを利用する設定
         parent::initialize();
+        $this->session = $this->request->getSession();
 
         $this->loadComponent('RequestHandler', [
             'enableBeforeRedirect' => false,
@@ -64,19 +66,43 @@ class AppController extends Controller
                         'password' => 'password'
                     ]
                 ]
-
-
             ],
         ]);
-
-        $this->Auth->allow();// TODO : ログイン機能の完全実装後に条件を作成
-
-
+        // ログインしていない場合はログインページにリダイレクト
+        $this->Auth->allow('login','add');
 
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+    }
+
+    /**
+     * 渡されたキーのセッション状態を確認 >>> あれば削除
+     * @param $key
+     */
+    protected function hasSessionDelete($key)
+    {
+        if ($this->session->check($key)) {
+            $this->session->delete($key);
+        }
+    }
+
+    /**
+     * 登録・編集のviewデータをセッションからセットする
+     * view変数名が指定されない場合はセッション名と同様の変数名にセットする
+     * @param $session_key
+     * @param null $view_variable_name
+     */
+    protected function setSessionViewData($session_key, $view_variable_name = null)
+    {
+        if ($this->session->check($session_key)) {
+            // 画面用変数名が未指定だったらセッションと同じキー名をsetする
+            if ($view_variable_name === null) {
+                $view_variable_name = $session_key;
+            }
+            $this->set($view_variable_name, $this->session->read($session_key));
+        }
     }
 }

@@ -1,4 +1,3 @@
-<!-- File: src/Template/Tests/history.ctp -->
 <?php $this->assign('title', '採点結果履歴画面'); ?>
 
   <table>
@@ -7,7 +6,7 @@
         <th>得点</th>
         <th>採点時間</th>
     </tr>
-      <?php foreach ( $histories as $history): ?>
+      <?php foreach ($histories as $history): ?>
       <tr>
           <td>
               <?= h($user_name) ?>
