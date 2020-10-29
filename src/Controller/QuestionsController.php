@@ -18,12 +18,12 @@ class QuestionsController extends AppController
      */
     public function questionList()
     {
-        $query = $this->Questions->find('all')->contain(['CorrectAnswers']);
-        $this->set('questions', $query->toArray());
+        $questions = $this->Questions->find('all')->contain(['CorrectAnswers']);
         // 登録数が0の場合は一覧でなく登録画面に遷移する
-        if (empty($query->toArray())) {
+        if ($questions->isEmpty()) {
             return $this->redirect(['action' => 'register']);
         }
+        $this->set('questions', $questions);
     }
 
     /**
