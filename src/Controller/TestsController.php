@@ -17,9 +17,9 @@ class TestsController extends AppController{
      */
     public function test()
     {
-        $questions = TableRegistry::getTableLocator()->get('questions');
-        $query = $questions->find('all', ['order' => 'rand()']);
-        $this->set('questions', $query->toArray());
+        $questionsTable = TableRegistry::getTableLocator()->get('questions');
+        $questions = $questionsTable->find('all', ['order' => 'rand()']);
+        $this->set('questions', $questions);
         // rand関数で生成した文字列＋マイクロ秒単位にもとづいた文字列＋エントロピー文字列
         // md5ハッシュ変換
         $token = md5(uniqid(rand(), true));
@@ -104,9 +104,9 @@ class TestsController extends AppController{
         if ($user === null) {
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
         }
-        $histories = TableRegistry::getTableLocator()->get('histories');
+        $historiesTable = TableRegistry::getTableLocator()->get('histories');
         $this->set('user_name', $user['name']);
-        $query = $histories->find('all')->where(['user_id' => $user['id']]);
-        $this->set('histories', $query->toArray());
+        $histories = $historiesTable->find('all')->where(['user_id' => $user['id']]);
+        $this->set('histories', $histories);
     }
 }

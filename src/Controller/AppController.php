@@ -94,8 +94,10 @@ class AppController extends Controller
      * view変数名が指定されない場合はセッション名と同様の変数名にセットする
      * @param $session_key
      * @param null $view_variable_name
+     *
+     * @return bool
      */
-    protected function setSessionViewData($session_key, $view_variable_name = null)
+    protected function isSessionViewData($session_key, $view_variable_name = null)
     {
         if ($this->session->check($session_key)) {
             // 画面用変数名が未指定だったらセッションと同じキー名をsetする
@@ -103,6 +105,9 @@ class AppController extends Controller
                 $view_variable_name = $session_key;
             }
             $this->set($view_variable_name, $this->session->read($session_key));
+            return true;
+        } else {
+            return false;
         }
     }
 }

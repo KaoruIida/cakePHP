@@ -20,10 +20,38 @@ class UsersTable extends Table
             ->setForeignKey('user_id')
             ->setDependent(true);
     }
+
     public function validationDefault(Validator $validator)
     {
-        return $validator
-            ->notEmpty('name', '名前の入力は必須です')
-            ->notEmpty('password', 'パスワードの入力は必須です');
+        // 半角英数字の独自ルール
+        $validator->provider('Custom', 'App\Model\Validation\CustomValidation');
+
+        $validator
+            // ユーザー名
+            ->requirePresence('name', 'create')// NOT NUL(必須項目)
+            ->notEmpty('name', '名前は入力必須項目です')// 空欄チェック
+            // 半角英数字チェック
+            ->add('name', 'alphaNumericRule', [
+                'rule' => ['alphaNumeric'],
+                'provider' => 'Custom',
+                'message' => '名前は半角英数字で入力してください',
+            ])
+            // パスワード
+            ->requirePresence('password', 'create')// NOT NUL(必須項目)
+            ->notEmpty('password', 'パスワードは入力必須項目です', 'create')// 空欄チェック
+            // 半角英数字8文字以上
+            ->minLength('password', 8, 'パスワードは8字以上で入力してください')
+            // 半角英数字チェック
+            ->add('password', 'alphaNumericRule', [
+                'rule' => ['alphaNumeric'],
+                'provider' => 'Custom',
+                'message' => 'パスワードは半角英数字で入力してください',
+            ])
+
+            // 管理者or一般チェック
+            ->add('admin', 'boolean', [
+                'rule' => 'boolean'
+            ]);
+        return $validator;
     }
 }
